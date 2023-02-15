@@ -3,9 +3,12 @@ import numpy as np
 import random
 from PIL import Image
 
-cap = cv2.VideoCapture('test\\cut.mp4')
+# cap = cv2.VideoCapture('test\\cut.mp4')
+cap = cv2.VideoCapture(0)
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-out = cv2.VideoWriter('test\\output.avi', fourcc, cap.get(cv2.CAP_PROP_FPS), (1280, 720), False)
+h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+out = cv2.VideoWriter('test\\output.avi', fourcc, cap.get(cv2.CAP_PROP_FPS), (w, h), False)
 
 noises = []
 for i in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
@@ -29,14 +32,14 @@ while True:
     # noise
     # print(noises[cnt-1])
     noised = np.zeros((gray.shape[0], gray.shape[1]))
-    noise = np.max(gray) * np.random.normal(0, 1, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
+    noise = np.max(gray) * np.random.normal(0, .6, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
     # noise = np.max(gray) * np.random.normal(0, noises[cnt-1], gray.shape[0] * gray.shape[1]).reshape(gray.shape)
     # print(noise.shape)
     noised = gray + noise
 ############################
 
-    # cv2.imshow('video feed', frame)
-    # cv2.imshow('gray feed', noised)
+    cv2.imshow('video feed', frame)
+    cv2.imshow('gray feed', noised)
     impath = 'test\\tmp_image.jpg'
     cv2.imwrite(impath, noised)
     if cv2.waitKey(1) & 0xFF == ord('q'):
