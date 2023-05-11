@@ -3,9 +3,9 @@ import numpy as np
 import random
 from PIL import Image
 
-cap = cv2.VideoCapture('test\\cut.mp4')
+cap = cv2.VideoCapture('yt_test.mp4')
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-out = cv2.VideoWriter('test\\output.avi', fourcc, cap.get(cv2.CAP_PROP_FPS), (1280, 720), False)
+out = cv2.VideoWriter('yt_noise.avi', fourcc, cap.get(cv2.CAP_PROP_FPS), (1280, 720), False)
 
 noises = []
 for i in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
@@ -39,8 +39,8 @@ while True:
     # cv2.imshow('gray feed', noised)
     impath = 'test\\tmp_image.jpg'
     cv2.imwrite(impath, noised)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
     im = cv2.imread(impath, cv2.IMREAD_GRAYSCALE)
     # cv2.imshow('loaded', im)
     out.write(im)

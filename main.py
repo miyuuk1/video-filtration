@@ -1,84 +1,60 @@
-import os
-import random
-import filterpy.kalman
-import filterpy.common
-import numpy as np
-
-from PIL import Image
-from PIL import ImageDraw
-from os import path
-
-DEF_SAMPLES_DIR = "samples"
-DEF_OUTPUT_DIR = "output"
-DEF_SAMPLE_NAME = "sample.jpg"
-DEF_SAMPLE_PATH = path.join(DEF_SAMPLES_DIR, DEF_SAMPLE_NAME)
-
-sig = 0.5
-disp = sig * sig
+from kalman import *
+from video_func import *
+import cv2
+from sys import argv
 
 
-def add_noise(im, sigma):
-    mu = 1
-    draw = ImageDraw.Draw(im)
-    width = im.size[0]
-    height = im.size[1]
-    pix = im.load()
-    for i in range(width):
-        for j in range(height):
-            rand = random.gauss(mu, sigma)
-            # r = pix[i, j][0] + rand
-            # g = pix[i, j][1] + rand
-            # b = pix[i, j][2] + rand
-            # if r < 0: r = 0
-            # if g < 0: g = 0
-            # if b < 0: b = 0
-            # if r > 255: r = 255
-            # if g > 255: g = 255
-            # if b > 255: b = 255
-            c = pix[i, j] + rand
-            # draw.point((i, j), (int(r), int(g), int(b)))
-            draw.point((i, j), int(c))
-    del draw
-    return im
+def init_video(cap_path, out_path):
+    cap = open_video(cap_path)
+    out, h, w = open_writer(cap, out_path)
+    return cap, out, h, w
 
 
-def filter_1d(im):
-    SKO = sig
-    (w, h) = im.size
-    draw = ImageDraw.Draw(im)
-    pix = im.load()
-    kf = filterpy.kalman.KalmanFilter(dim_x=1, dim_z=1)
-    kf.F = np.array([[1]])
-    kf.H = np.array([[1]])
-    # kf.Q = filterpy.common.Q_discrete_white_noise(dim=2, dt=0.1, var=0.1)
-    kf.Q = np.array([[1e-10]])
-    kf.R = np.array([[1e-4]])
-    kf.x = np.array([pix[0, 0]])
-    kf.P = np.array([[1000]])
-    for i in range(w):
-        for j in range(h):
-            z = [pix[i, j]]
-            kf.predict()
-            kf.update(z)
-            c = kf.x
-            draw.point((i, j), int(c))
-    return im
+def process_frame(kf, frame):
+    greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    kf.update(greyscale)
+
+
+# INPUT_PATH = "input.mp4"
+# OUTPUT_PATH = "output.mp4"
+TMP_PATH = 'tmp.jpg'
+
+
+def main_process(input_path, output):
+    cap, out, h, w = init_video(input_path, output)
+    FRAMES_COUNT = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    print(FRAMES_COUNT)
+    print(cap.get(cv2.CAP_PROP_FPS))
+    _, frame = cap.read()
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    shape = frame.shape
+    kf = KalmanFilter(shape)
+
+    kf.xhat = frame
+
+    for i in range(1, FRAMES_COUNT):
+        _, frame = cap.read()
+        process_frame(kf, frame)
+
+        cv2.imwrite(TMP_PATH, kf.xhat)
+
+        t = cv2.imread(TMP_PATH, cv2.IMREAD_GRAYSCALE)
+        out.write(t)
+
+    close_cap_out(cap, out)
 
 
 def main():
-    im = Image.open(DEF_SAMPLE_PATH).convert("L")
-    im.save(path.join(DEF_OUTPUT_DIR, "pure.jpeg"))
-    if not path.exists(DEF_OUTPUT_DIR):
-        os.mkdir(DEF_OUTPUT_DIR)
-    im = add_noise(im, 0.1)
-    out = path.join(DEF_OUTPUT_DIR, "noise3.jpeg")
-    im.save(out)
-    im = Image.open(out)
+    if len(argv) < 2:
+        print("error: params length < 2: ", argv)
+        print("usage: ", argv[0], " <input> <output>")
+        return
+    input_path = argv[1]
+    output = argv[2]
+
+    main_process(input_path, output)
 
 
-    out = path.join(DEF_OUTPUT_DIR, "filter3.jpeg")
-    im.save(out)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
