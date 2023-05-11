@@ -10,12 +10,6 @@ noises = []
 for i in range(30):
     noises.append(random.uniform(0., 100))
 
-# for i in range(3, len(noises)):
-#     avg = 0
-#     for j in range(3):
-#         avg = avg + noises[i-j]
-#     noises[i] = avg / 3
-        
 cnt = 0
 
 frame_count = 1200
@@ -28,7 +22,7 @@ for i in range(frame_count):
     # print(noises[cnt-1])
     noised = np.zeros((gray.shape[0], gray.shape[1]))
     # noise = np.max(gray) * np.random.normal(0, noises[cnt-1], gray.shape[0] * gray.shape[1]).reshape(gray.shape)
-    noise = np.max(gray) * np.random.normal(0, 10, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
+    noise = np.max(gray) * np.random.normal(0, 0.9, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
     # print(noise.shape)
     noised = gray + noise
 ############################
