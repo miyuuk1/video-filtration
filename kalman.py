@@ -22,18 +22,3 @@ class KalmanFilter:
         self.xhat = self.xhat_prev + self.K * (frame - self.xhat_prev)
         self.P = (1 - self.K * self.H) * self.P_prev
 
-
-# def init_filter(shape):
-#     xhat = np.zeros(shape)
-#     xhat_prev = np.zeros(shape)
-#     P = np.ones(shape)
-#     P_prev = np.zeros(shape)
-#     K = np.zeros(shape)
-#
-#     Q = np.ones(shape) * 1e-10
-#     R = np.ones(shape) * 1e0
-#     H = np.ones(shape)
-#
-#     P = np.ones(shape)
-
-
