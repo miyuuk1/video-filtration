@@ -4,7 +4,7 @@ import random
 from PIL import Image
 
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-out = cv2.VideoWriter('test\\output.avi', fourcc, 30, (960, 600), False)
+out = cv2.VideoWriter('test\\output_static_noise.avi', fourcc, 30, (600, 400), False)
 
 noises = []
 for i in range(30):
@@ -13,7 +13,7 @@ for i in range(30):
 cnt = 0
 
 frame_count = 1200
-im = cv2.imread('samples/halftone.jpg')
+im = cv2.imread('samples/test.jpg')
 gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 for i in range(frame_count):
 
@@ -22,7 +22,7 @@ for i in range(frame_count):
     # print(noises[cnt-1])
     noised = np.zeros((gray.shape[0], gray.shape[1]))
     # noise = np.max(gray) * np.random.normal(0, noises[cnt-1], gray.shape[0] * gray.shape[1]).reshape(gray.shape)
-    noise = np.max(gray) * np.random.normal(0, 0.9, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
+    noise = np.random.normal(1, 15, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
     # print(noise.shape)
     noised = gray + noise
 ############################

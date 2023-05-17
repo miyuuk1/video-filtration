@@ -1,6 +1,7 @@
 import cv2
 from kalman import *
 from video_func import *
+from preprocess_func import *
 
 
 TMP_PATH = 'tmp.jpg'
@@ -12,8 +13,11 @@ def init_video(cap_path, out_path):
     return cap, out, h, w
 
 
-def process_frame(kf, frame, out):
+def process_frame(kf, frame, out, prevs):
     greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # dm = preprocess_frame(greyscale, prevs)
+
+    # kf.Q = fill_q(kf.Q, dm)
     kf.update(greyscale)
 
     cv2.imwrite(TMP_PATH, kf.xhat)
@@ -35,8 +39,10 @@ def main_process(input_path, output):
 
     kf.xhat = frame
 
+    prev_frame = np.zeros((w, h))
+    prevs = prev_frame
     for i in range(1, FRAMES_COUNT):
         _, frame = cap.read()
-        process_frame(kf, frame, out)
+        process_frame(kf, frame, out, prevs)
 
     close_cap_out(cap, out)
