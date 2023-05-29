@@ -46,3 +46,14 @@ class KalmanFilter:
         # self.K = self.P_prev * self.H / (self.H * self.P_prev * self.H + self.R)
         # self.xhat = self.xhat_prev + self.K * (frame - self.xhat_prev)
         # self.P = (1 - self.K * self.H) * self.P_prev
+        #
+        #
+        # xhat_prev == x_hat_i
+        # P_prev == P_hat_i
+        # xhat == x_asterisk_i
+        # P == P_asterisk_i
+        #
+        # Q == D_eps_i
+        # H == H_i
+        # R ==
+        # K == gamma_i * P_asterisk_i*H_i.transpose() * D_n_i**-1

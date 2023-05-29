@@ -14,9 +14,9 @@ def init_video(cap_path, out_path):
 
 
 def process_frame(kf, frame, out, prevs):
-    greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     # dm = preprocess_frame(greyscale, prevs)
-
+    greyscale = frame
     # kf.Q = fill_q(kf.Q, dm)
     kf.update(greyscale)
 
@@ -33,11 +33,11 @@ def main_process(input_path, output):
     print(FRAMES_COUNT)
     print(cap.get(cv2.CAP_PROP_FPS))
 
-    frames = [FRAMES_COUNT]
+    frames = []
     for i in range(FRAMES_COUNT):
         _, frame = cap.read()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        frames[i] = frame
+        frames.append(frame)
     cap.release()
 
     shape = frames[0].shape
