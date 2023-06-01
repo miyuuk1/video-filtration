@@ -48,37 +48,20 @@ def make_noise(in_path, out_path, disp, debug = False, debug_name = ""):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if debug:
             cv2.imwrite(DEF_DEBUG_CLEAR + debug_name + "_frame_" + str(i) + ".jpg", gray)
-        # frames.append(gray)
 
-        ##################################
-        # noise
-        # print(noises[cnt-1])
-        # noised = np.zeros((gray.shape[0], gray.shape[1]))
-        # noise = np.max(gray) * np.random.normal(0, 1, gray.shape[0] * gray.shape[1]).reshape(gray.shape)
-        # noise = np.max(gray) * np.random.normal(0, noises[i], gray.shape[0] * gray.shape[1]).reshape(gray.shape)
-        # print(noise.shape)
-        # nn = np.ones(gray.shape) * noises[i]
-        # print(nn)
         noised = gray + noises[i]
         if debug:
             cv2.imwrite(DEF_DEBUG_NOISE + debug_name + "_frame_" + str(i) + ".jpg", noised)
             if i < 10:
                 np.savetxt(DEF_DEBUG_TEXT + debug_name + "_frame_" + str(i) + ".txt", noised, fmt='%.5f', delimiter='\n')
-        ############################
 
-        # cv2.imshow('video feed', frame)
-        # cv2.imshow('gray feed', noised)
         impath = '..\\test\\tmp_image.jpg'
         cv2.imwrite(impath, noised)
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
         im = cv2.imread(impath, cv2.IMREAD_GRAYSCALE)
-        # cv2.imshow('loaded', im)
         out.write(im)
 
     cap.release()
     out.release()
-    # cv2.destroyAllWindows()
 
 
 def main():
