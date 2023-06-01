@@ -27,13 +27,15 @@ def smoother(array, n):
     return array
 
 
-def make_noise(in_path, out_path, disp, debug = False, debug_name = ""):
+def make_noise(in_path, out_path, disp=0, debug = False, debug_name = ""):
     cap = cv2.VideoCapture(in_path)
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
     out = cv2.VideoWriter(out_path, fourcc, cap.get(cv2.CAP_PROP_FPS), (720, 480), False)
 
     noises = []
     for i in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
+        if disp == 0:
+            noises.append(np.random.normal(0., np.sqrt(np.random.uniform(10, 100)), (480, 720)))
         noises.append(np.random.normal(0., disp, (480, 720)))
 
     if debug:
@@ -65,9 +67,10 @@ def make_noise(in_path, out_path, disp, debug = False, debug_name = ""):
 
 
 def main():
-    make_noise(DEF_CUTSET1_INPUT, DEF_CUTSET1_OUTPUT, 10, True, "CUTSET1_DISP10")
-    make_noise(DEF_CUTSET2_INPUT, DEF_CUTSET2_OUTPUT, 20, True, "CUTSET2_DISP20")
-    make_noise(DEF_CUTSET3_INPUT, DEF_CUTSET3_OUTPUT, 30, True, "CUTSET3_DISP30")
+    #make_noise(DEF_CUTSET1_INPUT, DEF_CUTSET1_OUTPUT, 10, True, "CUTSET1_DISP10")
+    #make_noise(DEF_CUTSET2_INPUT, DEF_CUTSET2_OUTPUT, 20, True, "CUTSET2_DISP20")
+    #make_noise(DEF_CUTSET3_INPUT, DEF_CUTSET3_OUTPUT, 30, True, "CUTSET3_DISP30")
+    make_noise(DEF_CUTSET3_INPUT, DEF_CUTSET3_OUTPUT, 0, True, "CUTSET3_DISP0")
 
 
 if __name__ == "__main__":
