@@ -13,11 +13,11 @@ class KalmanFilter:
         self.gamma_i = 1
         self.H_i = np.ones(1)
         self.D_n_i = np.ones(1)
-        self.y_i = np.ones(1)
+        self.y_i = np.ones(shape)
         self.A_i = np.ones(1)
         self.A_prev = np.ones(1)
         self.F_i = np.ones(1)
-        self.D_eps_i = np.ones(1)
+        self.D_eps_i = np.ones(shape) * 1e-10
 
         # self.xhat = np.zeros(shape)
         # self.xhat_prev = np.zeros(shape)
@@ -34,12 +34,14 @@ class KalmanFilter:
     def update(self, frame):
         self.y_i = frame
 
-        self.x_asterisk_i = self.x_hat_i + self.gamma_i * self.P_asterisk_i * self.H_i.transpose() * (
-                    self.D_n_i ** -1) * (self.y_i - self.H_i * self.x_hat_i)
         self.x_hat_i = self.A_prev * self.x_asterisk_prev
-        self.P_asterisk_i = self.P_hat_i - self.gamma_i * self.P_hat_i * self.H_i.transpose() * (
-                    self.D_n_i + self.H_i * self.P_hat_i * self.H_i.transpose()) ** -1 * self.H_i * self.P_hat_i
         self.P_hat_i = self.A_prev * self.P_asterisk_prev * self.A_prev.transpose() + self.F_i * self.D_eps_i * self.F_i.transpose()
+
+        self.x_asterisk_i = self.x_hat_i + self.gamma_i * self.P_asterisk_i * self.H_i.transpose() * (self.y_i - self.H_i * self.x_hat_i) / self.D_n_i
+        self.P_asterisk_i = self.P_hat_i - self.gamma_i * self.P_hat_i * self.H_i.transpose() * self.H_i * self.P_hat_i / (self.D_n_i + self.H_i * self.P_hat_i * self.H_i.transpose())
+
+        self.x_asterisk_prev = self.x_asterisk_i
+        self.P_asterisk_prev = self.P_asterisk_i
 
         # self.xhat_prev = self.xhat
         # self.P_prev = self.P + self.Q

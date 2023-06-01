@@ -1,6 +1,6 @@
 from sys import argv
 from process_func import main_process
-
+import common.common as commons
 
 def main():
     if len(argv) < 2:
