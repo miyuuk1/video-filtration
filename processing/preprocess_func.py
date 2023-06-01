@@ -78,7 +78,7 @@ def fill_q(q, dm):
 def preprocess_frame(frame, prevs):
     frame = frame.reshape((frame.shape[1], frame.shape[0]))
     blured = cv2.GaussianBlur(frame, (9, 9), 0.9)
-    # cv2.imwrite('test/gaussian.jpg', blured)
+
     last = blured
     dsum = motion_compensation(last, prevs)
 

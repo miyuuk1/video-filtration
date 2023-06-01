@@ -13,15 +13,11 @@ def init_video(cap_path, out_path):
     return cap, out, h, w
 
 
-def process_frame(kf, frame, out, prevs):
-    # greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # dm = preprocess_frame(greyscale, prevs)
+def process_frame(kf, frame, out):
     greyscale = frame
-    # kf.Q = fill_q(kf.Q, dm)
     kf.update(greyscale)
 
-    cv2.imwrite(TMP_PATH, kf.x_asterisk_i)
-
+    cv2.imwrite(TMP_PATH, kf.xhat)
     t = cv2.imread(TMP_PATH, cv2.IMREAD_GRAYSCALE)
     out.write(t)
 
@@ -43,11 +39,11 @@ def main_process(input_path, output):
     shape = frames[0].shape
     kf = KalmanFilter(shape)
 
-    # kf.xhat = frame
+    kf.xhat = frame
 
     prev_frame = np.zeros((w, h))
     prevs = prev_frame
     for i in range(FRAMES_COUNT):
-        process_frame(kf, frames[i], out, prevs)
+        process_frame(kf, frames[i], out)
 
     out.release()
