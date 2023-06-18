@@ -54,7 +54,7 @@ def main_process(input_path, output):
         P_noised[i] = kf.P
 
     plan = get_plan(P_noised)
-    file = open(common.DEF_DEBUG_TEXT + "second_plan.txt", "w")
+    file = open(common.DEFAULT_OUTPUT + "text\\" + "second_plan.txt", "w")
     file.write(str(plan))
 
     kf.reset()
